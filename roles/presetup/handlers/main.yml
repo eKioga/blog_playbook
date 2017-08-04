@@ -1,0 +1,5 @@
+---
+- name: restart ssh
+  become: yes
+  become_method: sudo
+  service: name=ssh state=restarted

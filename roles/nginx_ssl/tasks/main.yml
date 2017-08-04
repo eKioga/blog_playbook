@@ -1,0 +1,22 @@
+- name: Ensure default virtual host is removed.
+  become: yes
+  become_method: sudo
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Configure passenger ssl virtual host.
+  become: yes
+  become_method: sudo
+  template:
+    src: passenger_ssl.j2
+    dest: /etc/nginx/sites-available/passenger
+
+- name: Ensure passenger virtual host is enabled.
+  become: yes
+  become_method: sudo
+  file:
+    src: /etc/nginx/sites-available/passenger
+    dest: /etc/nginx/sites-enabled/passenger
+    state: link
+  notify: restart nginx

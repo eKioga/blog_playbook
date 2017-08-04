@@ -1,0 +1,46 @@
+- name: Clone rbenv
+  git: repo=git://github.com/sstephenson/rbenv.git dest=~/.rbenv
+  tags:
+    - install_ruby
+
+- name: Clone ruby-build
+  git: repo=git://github.com/sstephenson/ruby-build.git dest=~/.rbenv/plugins/ruby-build
+  tags:
+    - install_ruby
+
+- name: Create bash directory
+  file: dest=/home/deploy/.bash.d/ state=directory
+  tags:
+    - install_ruby
+
+- name: Put rbenv in bash
+  copy: src=rbenv.bash dest=/home/deploy/.bash.d/rbenv.bash mode=700 owner=deploy
+  tags:
+    - install_ruby
+
+- name: Load rbenv
+  lineinfile: dest=/home/deploy/.bashrc regexp="rbenv" insertafter=EOF line="source ~/.bash.d/rbenv.bash"
+  tags:
+    - install_ruby
+
+- name: Checks if Ruby {{ ruby_version }} is installed
+  shell: cd; bash -lc "/home/deploy/.rbenv/bin/rbenv versions | grep {{ ruby_version }} | tr '*' ' ' | sed -e 's/\s\+//' | cut -f1 -d' '"
+  register: ruby_is_installed
+
+- name: Install Ruby {{ ruby_version }}
+  shell: cd; bash -lc "/home/deploy/.rbenv/bin/rbenv install -v {{ ruby_version }}"
+  when: (ruby_is_installed is undefined) or (ruby_is_installed.stdout != ruby_version)
+  tags:
+    - install_ruby
+
+- name: Make Ruby global
+  shell: cd; bash -lc "/home/deploy/.rbenv/bin/rbenv global {{ ruby_version }}"
+  when: (ruby_is_installed is undefined) or (ruby_is_installed.stdout != ruby_version)
+  tags:
+    - install_ruby
+
+- name: Install bundler
+  shell: bash -lc "/home/deploy/.rbenv/shims/gem install bundler"
+  when: (ruby_is_installed is undefined) or (ruby_is_installed.stdout != ruby_version)
+  tags:
+    - install_ruby

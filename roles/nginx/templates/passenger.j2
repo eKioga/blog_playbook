@@ -1,0 +1,39 @@
+server {
+  listen 80;
+  server_name www.{{ passenger_server_name }};
+
+  location /.well-known/acme-challenge {
+    root /var/www/html;
+  }
+
+  location / {
+    return       301 https://{{ passenger_server_name }}$request_uri;
+  }
+}
+
+
+server {
+  listen 80 default_server;
+  server_name {{ passenger_server_name }};
+  passenger_enabled on;
+  passenger_app_env {{ passenger_app_env }};
+  passenger_min_instances 1;
+  root {{ passenger_app_root }};
+
+  location ~* \.(svg|ico|css|js|gif|jpe?g|png)(\?[0-9]+)?$ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+    break;
+  }
+
+  location /.well-known/acme-challenge {
+    root /var/www/html;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  location = /500.html {
+    root {{ passenger_app_root }};
+  }
+
+}

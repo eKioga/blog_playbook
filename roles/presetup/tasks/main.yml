@@ -1,0 +1,36 @@
+- name: Get up to date apt listing
+  raw: apt-get update
+
+- name: Install python to run ansible
+  raw: sudo apt-get install -y python-simplejson
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+- name: Create the deploy user
+  user:
+    name: deploy
+    group: wheel
+    state: present
+    shell: /bin/bash
+
+- name: Install SSH key
+  authorized_key:
+    user: deploy
+    key: "{{ lookup('file', '{{ ssh_key_path }}') }}"
+
+- name: Disallow password authentication
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PasswordAuthentication"
+              line="PasswordAuthentication no"
+              state=present
+  notify: restart ssh

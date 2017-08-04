@@ -1,0 +1,60 @@
+---
+- name: Set MySQL root password before installing
+  become: yes
+  become_method: sudo
+  debconf: name='mysql-server' question='mysql-server/root_password' value='{{ database_pass | quote}}' vtype='password'
+
+- name: Set MySQL root password before installing
+  become: yes
+  become_method: sudo
+  debconf: name='mysql-server' question='mysql-server/root_password' value='{{ database_pass | quote}}' vtype='password'
+
+- name: Confirm MySQL root password before installing
+  become: yes
+  become_method: sudo
+  debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{ database_pass | quote}}' vtype='password'
+
+- name: Install MySQL
+  become: yes
+  become_method: sudo
+  apt: package={{ item }} state=installed force=yes update_cache=yes
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+
+- name: Deletes anonymous MySQL server user for localhost
+  become: yes
+  become_method: sudo
+  mysql_user: user="" state="absent" login_password="{{ database_pass }}" login_user=root
+
+- name: Secures the MySQL root user
+  become: yes
+  become_method: sudo
+  mysql_user: user="root" password="{{ database_pass }}" host="{{ item }}" login_password="{{ database_pass }}" login_user=root
+  with_items:
+    - 127.0.0.1
+    - localhost
+    - ::1
+    - "{{ ansible_fqdn }}"
+
+- name: Removes the MySQL test database
+  become: yes
+  become_method: sudo
+  mysql_db: db=test state=absent login_password="{{ database_pass }}" login_user=root
+
+- name: Add the Mysql User
+  become: yes
+  become_method: sudo
+  mysql_user: user="{{ database_user }}" password="{{ database_pass }}" priv=*.*:ALL state=present host="{{ item }}" login_password="{{ database_pass }}" login_user=root
+  with_items:
+    - 127.0.0.1
+    - localhost
+    - ::1
+    - "{{ ansible_fqdn }}"
+
+
+- name: Install the database we want
+  become: yes
+  become_method: sudo
+  mysql_db: db="{{ database_name}}" state=present login_password="{{ database_pass }}" login_user="{{ database_user }}"

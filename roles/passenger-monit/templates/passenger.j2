@@ -1,0 +1,2 @@
+check process passenger matching "Passenger RubyApp: {{ passenger_app_root_for_monit }}"
+  if memory usage > 150.0 MB then exec /etc/monit/restart_passenger

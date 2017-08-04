@@ -1,0 +1,19 @@
+- name: Deny all incoming connections by default
+  become: yes
+  become_method: sudo
+  ufw: state=enabled policy=deny
+
+- name: Allow incoming connections on port 80
+  become: yes
+  become_method: sudo
+  ufw: rule=allow port=80
+
+- name: Allow incoming connections on port 443
+  become: yes
+  become_method: sudo
+  ufw: rule=allow port=443
+
+- name: Allow incoming connections on port 22
+  become: yes
+  become_method: sudo
+  ufw: rule=allow port=22

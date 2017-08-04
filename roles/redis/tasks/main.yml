@@ -1,0 +1,6 @@
+- name: Install Redis
+  become: yes
+  become_method: sudo
+  apt: name=redis-server state=latest
+  tags:
+    - install_redis

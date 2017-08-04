@@ -1,0 +1,6 @@
+- name: Install Memcached
+  become: yes
+  become_method: sudo
+  apt: name=memcached state=latest
+  tags:
+    - install_memcached

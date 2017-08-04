@@ -1,0 +1,54 @@
+- name: Import the NodeSource GPG key into apt
+  become: yes
+  become_method: sudo
+  apt_key:
+    id: 68576280
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280"
+
+- name: Add Nodejs Repo
+  become: yes
+  become_method: sudo
+  apt_repository: repo="deb https://deb.nodesource.com/node_7.x xenial main" state="present"
+
+- name: Add Yarn repo key
+  become: yes
+  become_method: sudo
+  apt_key: url="https://dl.yarnpkg.com/debian/pubkey.gpg" state="present"
+
+- name: Add Yarn Repo
+  become: yes
+  become_method: sudo
+  apt_repository: repo="deb https://dl.yarnpkg.com/debian/ stable main" state="present"
+
+- name: Update apt
+  become: yes
+  become_method: sudo
+  raw: apt-get update
+  tags:
+    - build_dependencies
+
+
+- name: Install Build Dependencies
+  become: yes
+  become_method: sudo
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - curl
+    - git-core
+    - zlib1g-dev
+    - build-essential
+    - libssl-dev
+    - libreadline-dev
+    - libyaml-dev
+    - libsqlite3-dev
+    - sqlite3
+    - libxml2-dev
+    - libxslt1-dev
+    - libcurl4-openssl-dev
+    - python-software-properties
+    - libffi-dev
+    - imagemagick
+    - nodejs
+    - yarn
+  tags:
+    - build_dependencies

@@ -1,0 +1,40 @@
+- name: Install Monit
+  become: yes
+  become_method: sudo
+  apt: name=monit state=latest
+  tags:
+    - install_passenger_monit
+
+- name: Copy the Passenger restart command file into place
+  become: yes
+  become_method: sudo
+  template:
+    src: restart_passenger.j2
+    dest: /etc/monit/restart_passenger
+
+- name: Make restart file executable
+  become: yes
+  become_method: sudo
+  raw: chmod a+x /etc/monit/restart_passenger
+  notify: restart monit
+
+- name: Enable monit status
+  become: yes
+  become_method: sudo
+  blockinfile:
+    dest: /etc/monit/monitrc
+    block: |
+      set httpd port 2812
+      use address localhost
+      allow localhost
+      allow admin:monit
+
+  notify: restart monit
+
+- name: Copy Passenger monit config into place
+  become: yes
+  become_method: sudo
+  template:
+    src: passenger.j2
+    dest: /etc/monit/conf.d/passenger
+  notify: restart monit
