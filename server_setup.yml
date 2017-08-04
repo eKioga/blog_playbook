@@ -4,12 +4,12 @@
   remote_user: deploy
   vars:
     ruby_version: 2.2.4
-    database: mysql
+    database: postgresql
     database_name: blog-production
     database_user: deploy
 
     app_name: blog
-    passenger_server_name: eric-post.ddns.net
+    passenger_server_name: example.com
     passenger_app_root: /home/deploy/{{ app_name }}/current/public
     passenger_app_root_for_monit: \/home\/deploy\/{{app_name}}\/current\/public
     passenger_app_restart_file: /home/deploy/{{app_name}}/current/tmp/restart.txt
