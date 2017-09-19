@@ -4,17 +4,17 @@ It's now time to provision a server using a tool called Ansible. Once we've comp
 
 #### Step 1. What is Ansible
 Ben's IT Lessons
-youtube.com/watch?v=icR-df2Olm8
+
+https://www.youtube.com/watch?v=icR-df2Olm8
 
 The video tutorial above is great for walking you through the basics of how to use Ansible and understand it's framework.
 
 #### Step 2. Make a dog house and then put the dog in it.
 Chris Herring
-youtube.com/watch?v=3QTD6nHKVYI
 
-This tutorial shows you how to provision a rails server with Ansible and then deploy your rails app with Capistrano. It's rather daunting at first. It goes over two big concepts in one short video but doesn't really hold your hand. It took me a few days to make it to the end of this 16 minute video due to all the errors I had to research and overcome. Not to mention that the playbook he uses in this tutorial is hidden behind a mailing list. Don't worry, I had already jumped through the hoops for you and was able to grab his playbook. It's on my GitHub located at the link below.
+https://www.youtube.com/watch?v=3QTD6nHKVYI
 
-https://github.com/eKioga/blog_playbook.git
+This tutorial shows you how to provision a rails server with Ansible and then deploy your rails app with Capistrano. It's rather daunting at first. It goes over two big concepts in one short video but doesn't really hold your hand. It took me a few days to make it to the end of this 16 minute video due to all the errors I had to research and overcome. Not to mention that the playbook he uses in this tutorial is hidden behind a mailing list. Don't worry, I had already jumped through the hoops for you and was able to grab his playbook.
 
 You may have already noticed that there are actually two playbooks here, server_pre_setup.yml and server_setup.yml. Follow the logic of these playbooks and make sure that you understand what all the roles do. 
 
